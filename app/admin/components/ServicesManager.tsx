@@ -16,6 +16,7 @@ export interface Category {
 interface Props {
   categories: Category[]
   onCategoriesChange?: () => void // opcional para atualizar categorias quando necessário
+  globalSearch?: string // search global da AdminPage
 }
 
 interface ServiceForm {
@@ -26,7 +27,7 @@ interface ServiceForm {
   category_id?: string
 }
 
-export default function ServicesManager({ categories, onCategoriesChange }: Props) {
+export default function ServicesManager({ categories, onCategoriesChange, globalSearch }: Props) {
   const [services, setServices] = useState<Service[]>([])
   const [search, setSearch] = useState("")
   const [filteredServices, setFilteredServices] = useState<Service[]>([])
@@ -68,7 +69,14 @@ export default function ServicesManager({ categories, onCategoriesChange }: Prop
       service.categoryName.toLowerCase().includes(search.toLowerCase())
     )
     setFilteredServices(filtered)
-  }, [services, search])
+  }, [services, search, globalSearch])
+
+  // Sincroniza search local com globalSearch
+  useEffect(() => {
+    if (globalSearch !== undefined) {
+      setSearch(globalSearch)
+    }
+  }, [globalSearch])
 
   async function handleSubmit() {
     if (!form.name?.trim()) {
@@ -149,122 +157,137 @@ export default function ServicesManager({ categories, onCategoriesChange }: Prop
   }
 
   return (
-    <div className="p-6 space-y-4">
-
+    <div className="space-y-6">
       {/* FORM */}
-      <div className="space-y-2.5 border p-6 rounded-lg">
-        <h2 className="text-xl font-bold">Serviços</h2>
+      <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+        <h2 className="text-xl font-bold mb-6 text-slate-900">Adicionar/Editar Serviço</h2>
 
-        <Input
-          className="border p-2 w-full"
-          placeholder="Nome"
-          value={form.name || ""}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-          disabled={loading}
-        />
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Input
+            placeholder="Nome do serviço"
+            value={form.name || ""}
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
+            disabled={loading}
+          />
+
+          <select
+            className="border border-slate-300 rounded-md p-2 w-full focus:border-emerald-500 focus:outline-none"
+            value={form.category_id || ""}
+            onChange={(e) => setForm({ ...form, category_id: e.target.value })}
+            disabled={loading}
+          >
+            <option value="">Selecione a categoria</option>
+            {categories.map((cat) => (
+              <option key={cat.id} value={cat.id}>
+                {cat.name}
+              </option>
+            ))}
+          </select>
+        </div>
 
         <textarea
-          className="border p-2 w-full"
-          placeholder="Descrição"
+          className="w-full mt-4 border border-slate-300 rounded-md p-2 focus:border-emerald-500 focus:outline-none resize-none"
+          rows={3}
+          placeholder="Descrição do serviço"
           value={form.description || ""}
           onChange={(e) => setForm({ ...form, description: e.target.value })}
           disabled={loading}
         />
 
-        <select
-          className="border p-2 w-full"
-          value={form.category_id || ""}
-          onChange={(e) => setForm({ ...form, category_id: e.target.value })}
-          disabled={loading}
-        >
-          <option value="">Selecione a categoria</option>
-          {categories.map((cat) => (
-            <option key={cat.id} value={cat.id}>
-              {cat.name}
-            </option>
-          ))}
-        </select>
-
-
-        <div className="flex justify-between items-center gap-4 ">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
           <Input
-            className="border p-2 w-full"
             placeholder="Endereço"
             value={form.address || ""}
             onChange={(e) => setForm({ ...form, address: e.target.value })}
             disabled={loading}
           />
           <Input
-            className="border p-2 w-full"
             placeholder="Telefone"
             value={form.phone || ""}
             onChange={(e) => setForm({ ...form, phone: e.target.value })}
             disabled={loading}
           />
-
         </div>
 
-        <div className="flex gap-2 mt-4">
+        <div className="flex gap-3 mt-6">
           {editingId ? (
             <>
               <Button
-                className="w-1/2"
                 variant="outline"
                 onClick={handleCancel}
                 disabled={loading}
+                className="flex-1"
               >
                 Cancelar
               </Button>
               <Button
-                className="w-1/2"
                 onClick={handleSubmit}
                 disabled={loading}
+                className="flex-1"
               >
                 Atualizar Serviço
               </Button>
             </>
           ) : (
             <Button
-              className="w-full"
               onClick={handleSubmit}
               disabled={loading}
+              className="w-full"
             >
               Salvar Serviço
             </Button>
           )}
         </div>
-
       </div>
 
+      {/* Search */}
+      <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+        <div className="relative">
+          <SearchCheck className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 h-4 w-4" />
+          <input
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Buscar serviços por nome, descrição, endereço ou categoria..."
+            className="w-full pl-10 pr-4 py-3 border border-slate-300 rounded-lg focus:border-emerald-500 focus:outline-none"
+          />
+        </div>
+      </div>
 
       {/* LISTAGEM */}
-     <div className="flex justify-around items-center mt-10">
-       <h2 className="text-xl font-bold mt-10 mb-4">Serviços Cadastrados</h2>
+      <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-bold text-slate-900">
+            Serviços Cadastrados ({filteredServices.length})
+          </h2>
+          {search && (
+            <Button variant="outline" onClick={() => setSearch("")}>
+              Limpar Filtro
+            </Button>
+          )}
+        </div>
 
-              {/* Search */}
-      <div className="relative w-1/2 mx-auto">
-        <SearchCheck className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-        <input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Ex: dentista"
-          className="w-full pl-12 py-4 rounded-2xl shadow-lg"
-        />
-      </div>
-     </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-
-        {filteredServices.map((service) => (
-          <ServiceCard
-            key={service.id}
-            service={service}
-            variant="admin"
-            onEdit={handleEdit}
-            onDelete={handleDelete}
-          />
-        ))}
-
+        {filteredServices.length === 0 ? (
+          <div className="text-center py-12">
+            <div className="text-slate-400 mb-4">
+              <SearchCheck className="h-12 w-12 mx-auto" />
+            </div>
+            <p className="text-slate-600">
+              {search ? "Nenhum serviço encontrado para esta busca." : "Nenhum serviço cadastrado ainda."}
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredServices.map((service) => (
+              <ServiceCard
+                key={service.id}
+                service={service}
+                variant="admin"
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
+            ))}
+          </div>
+        )}
       </div>
 
       <ConfirmDialog

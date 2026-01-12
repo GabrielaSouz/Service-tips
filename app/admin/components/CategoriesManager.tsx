@@ -5,9 +5,11 @@ import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { ConfirmDialog } from "@/components/ui/confirm-dialog"
 import { Input } from "@/components/ui/input"
+import { Database } from "lucide-react"
 
 interface Props {
   onChange?: () => void // opcional, para avisar o AdminPage quando algo muda
+  globalSearch?: string // search global da AdminPage
 }
 
 type Category = {
@@ -15,20 +17,25 @@ type Category = {
   name: string
 }
 
-export default function CategoriesManager({ onChange }: Props) {
+export default function CategoriesManager({ onChange, globalSearch }: Props) {
   const [categories, setCategories] = useState<Category[]>([])
+  const [filteredCategories, setFilteredCategories] = useState<Category[]>([])
+  const [search, setSearch] = useState("")
   const [form, setForm] = useState<{ name?: string }>({})
   const [editingId, setEditingId] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [categoryToDelete, setCategoryToDelete] = useState<string | null>(null)
+  const [existingCategory, setExistingCategory] = useState<Category | null>(null)
 
   // 🔄 Carrega categorias do servidor
   async function loadCategories() {
     try {
       const res = await fetch("/api/categories")
       const data = await res.json()
-      setCategories(data)
+      const sorted = data.sort((a: Category, b: Category) => a.name.localeCompare(b.name))
+      setCategories(sorted)
+      setFilteredCategories(sorted)
     } catch (err) {
       console.error("Erro ao carregar categorias:", err)
       toast.error("Erro ao carregar categorias")
@@ -39,10 +46,47 @@ export default function CategoriesManager({ onChange }: Props) {
     loadCategories()
   }, [])
 
+  // 🔄 Filtra categorias e verifica se já existe
+  useEffect(() => {
+    const filtered = categories.filter(category =>
+      category.name.toLowerCase().includes(search.toLowerCase())
+    )
+    setFilteredCategories(filtered)
+
+    // Verifica se o nome digitado já existe
+    if (search.trim()) {
+      const existing = categories.find(cat => 
+        cat.name.toLowerCase() === search.toLowerCase() && 
+        cat.id !== editingId
+      )
+      setExistingCategory(existing || null)
+    } else {
+      setExistingCategory(null)
+    }
+  }, [categories, search, editingId, globalSearch])
+
+  // Sincroniza search local com globalSearch
+  useEffect(() => {
+    if (globalSearch !== undefined) {
+      setSearch(globalSearch)
+    }
+  }, [globalSearch])
+
   // ✍️ Criar ou atualizar categoria
   async function handleSubmit() {
     if (!form.name?.trim()) {
       toast.error("Informe o nome da categoria")
+      return
+    }
+
+    // Verifica se já existe (exceto se estiver editando)
+    const existing = categories.find(cat => 
+      cat.name.toLowerCase() === form.name!.toLowerCase() && 
+      cat.id !== editingId
+    )
+    
+    if (existing && !editingId) {
+      toast.error("Esta categoria já existe!")
       return
     }
 
@@ -115,76 +159,139 @@ export default function CategoriesManager({ onChange }: Props) {
   function handleEdit(category: Category) {
     setEditingId(category.id)
     setForm({ name: category.name })
+    setSearch(category.name)
   }
 
   function handleCancel() {
     setEditingId(null)
     setForm({})
+    setSearch("")
+    setExistingCategory(null)
   }
 
   return (
-    <div className="p-6  ">
-
-      <div className="border rounded-lg p-6 space-y-4">
-        <h1 className="text-xl font-bold">Categorias</h1>
-        {/* FORM */}
-        <div className="flex flex-col justify-between items-center md:flex-row gap-4">
-
-
-          <Input
-            className="border p-2 w-full"
-            value={form.name || ""}
-            onChange={(e) => setForm({ name: e.target.value })}
-            placeholder="Nome da categoria"
-            disabled={loading}
-          />
-
-          <div className="flex gap-2 ">
+    <div className="space-y-6">
+      <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+        <h2 className="text-xl font-bold mb-6 text-slate-900">Adicionar/Editar Categoria</h2>
+        
+        <div className="space-y-4">
+          <div className="relative">
+            <Input
+              placeholder="Digite o nome da categoria..."
+              value={search}
+              onChange={(e) => {
+                setSearch(e.target.value)
+                setForm({ name: e.target.value })
+              }}
+              disabled={loading}
+              className="pr-24"
+            />
+            
+            {/* Indicador visual de categoria existente */}
+            {existingCategory && (
+              <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-2">
+                <span className="text-xs text-emerald-600 font-medium">
+                  ✓ {existingCategory.name}
+                </span>
+              </div>
+            )}
+          </div>
+          
+          <div className="flex gap-2">
             {editingId && (
               <Button variant="outline" onClick={handleCancel} disabled={loading}>
                 Cancelar
               </Button>
             )}
-            <Button onClick={handleSubmit} disabled={loading} >
-              {editingId ? "Atualizar" : "Salvar"}
-            </Button>
+            
+            {/* Botão Salvar só aparece se não existir categoria com mesmo nome */}
+            {!existingCategory && search.trim() && (
+              <Button onClick={handleSubmit} disabled={loading}>
+                {editingId ? "Atualizar" : "Salvar"}
+              </Button>
+            )}
+            
+            {/* Se estiver editando, mostra o botão mesmo que exista */}
+            {editingId && (
+              <Button onClick={handleSubmit} disabled={loading}>
+                Atualizar
+              </Button>
+            )}
           </div>
         </div>
+      </div>
 
-        {/* LISTAGEM */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 ">
-          {categories.map((category) => (
-            <div
-              key={category.id}
-              className="flex justify-between items-center border p-2 rounded-lg"
-            >
-              <span>{category.name}</span>
-              <div className="space-x-2">
-                <Button variant="outline" onClick={() => handleEdit(category)}>
-                  Editar
-                </Button>
-                <Button
-                  variant="destructive"
-                  onClick={() => handleDelete(category.id)}
-                >
-                  Excluir
-                </Button>
-              </div>
-            </div>
-          ))}
+      <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-bold text-slate-900">
+            Categorias ({filteredCategories.length})
+          </h2>
+          {search && (
+            <Button variant="outline" size="sm" onClick={() => {
+              setSearch("")
+              setForm({})
+              setExistingCategory(null)
+            }}>
+              Limpar Filtro
+            </Button>
+          )}
         </div>
 
-        <ConfirmDialog
-          open={deleteDialogOpen}
-          onOpenChange={setDeleteDialogOpen}
-          title="Excluir Categoria"
-          description="Tem certeza que deseja excluir esta categoria? Esta ação não pode ser desfeita."
-          onConfirm={confirmDelete}
-          confirmText="Excluir"
-          cancelText="Cancelar"
-          loading={loading}
-        />
+        {filteredCategories.length === 0 ? (
+          <div className="text-center py-12">
+            <div className="text-slate-400 mb-4">
+              <Database className="h-12 w-12 mx-auto" />
+            </div>
+            <p className="text-slate-600">
+              {search ? "Nenhuma categoria encontrada para esta busca." : "Nenhuma categoria cadastrada ainda."}
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {filteredCategories.map((category) => (
+              <div
+                key={category.id}
+                className={`flex items-center justify-between p-4 border rounded-lg transition-colors ${
+                  existingCategory?.id === category.id 
+                    ? "border-emerald-500 bg-emerald-50" 
+                    : "border-slate-200 hover:border-emerald-500"
+                }`}
+              >
+                <span className="font-medium text-slate-900 truncate flex-1">
+                  {category.name}
+                </span>
+                <div className="flex gap-2 ml-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleEdit(category)}
+                  >
+                    Editar
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => handleDelete(category.id)}
+                  >
+                    Excluir
+                  </Button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
+
+      <ConfirmDialog
+        open={deleteDialogOpen}
+        onOpenChange={setDeleteDialogOpen}
+        title="Excluir Categoria"
+        description="Tem certeza que deseja excluir esta categoria? Esta ação não pode ser desfeita."
+        onConfirm={confirmDelete}
+        confirmText="Excluir"
+        cancelText="Cancelar"
+        loading={loading}
+      />
     </div>
   )
 }

@@ -1,10 +1,55 @@
+"use client"
+
 import Link from "next/link";
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 export default function Register() {
+   const router = useRouter()
+   const [name, setName] = useState("")
+   const [email, setEmail] = useState("")
+   const [password, setPassword] = useState("")
+   const [loading, setLoading] = useState(false)
+
+   async function handleRegister(e: React.FormEvent) {
+      e.preventDefault()
+      setLoading(true)
+ 
+      try {
+         const res = await fetch("/api/auth/register", {
+            method: "POST",
+            headers: {
+               "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ name, email, password })
+         })
+ 
+         const data = await res.json()
+         setLoading(false)
+
+         if (!data.success) {
+            toast.error(data.error || "Erro ao criar conta")
+            return
+         }
+
+         toast.success("Conta criada com sucesso! Verifique seu email para confirmar.")
+         // Limpa o formulário
+         setName("")
+         setEmail("")
+         setPassword("")
+         // Redireciona para a página de login
+         router.push("/login")
+      } catch (error) {
+         setLoading(false)
+         toast.error("Erro de conexão. Tente novamente.")
+      }
+   }
+
    return (
       <div className="h-screen flex flex-col justify-center items-center bg-gray-50">
          <div className="bg-white rounded-lg shadow-md w-full max-w-md">
@@ -30,23 +75,23 @@ export default function Register() {
                </div>
 
                {/* Form */}
-               <form className="space-y-4">
+               <form onSubmit={handleRegister} className="space-y-4">
                   <div className="space-y-1">
                      <Label htmlFor="name" className="text-slate-800">Name</Label>
-                     <Input id="name" type="text" placeholder="Enter your name" className="text-sm" />
+                     <Input id="name" value={name} onChange={(e) => setName(e.target.value)} type="text" placeholder="Enter your name" className="text-sm" />
                   </div>
 
                   <div className="space-y-1">
                      <Label htmlFor="email" className="text-slate-800">Email</Label>
-                     <Input id="email" type="email" placeholder="Enter your email" className="text-sm" />
+                     <Input id="email" value={email} onChange={(e) => setEmail(e.target.value)} type="email" placeholder="Enter your email" className="text-sm" />
                   </div>
 
                   <div className="space-y-1">
                      <Label htmlFor="password" className="text-slate-800">Password</Label>
-                     <Input id="password" type="password" placeholder="Enter your password" className="text-sm" />
+                     <Input id="password" value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Enter your password" className="text-sm" />
                   </div>
 
-                  <Button type="submit" className="w-full mt-4">Sign Up</Button>
+                  <Button type="submit" className="w-full mt-4" disabled={loading}>{loading ? "Loading..." : "Sign Up"}</Button>
 
                </form>
             </div>

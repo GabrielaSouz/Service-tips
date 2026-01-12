@@ -50,8 +50,8 @@ export default function ServiceHero({
       <div className="mt-8 flex flex-wrap gap-3 justify-center">
         <button
           onClick={() => onCategoryChange(null)}
-          className={`px-5 py-2 rounded-full text-sm cursor-pointer ${
-            !selectedCategory ? "bg-emerald-600 text-white" : "bg-white"
+          className={`px-5 py-2 rounded-full text-sm cursor-pointer border ${
+            !selectedCategory ? "bg-emerald-600 text-white font-semibold" : "bg-white"
           }`}
         >
           Todas
@@ -61,10 +61,10 @@ export default function ServiceHero({
           <button
             key={cat.id}
             onClick={() => onCategoryChange(cat.id)}
-            className={`px-5 py-2 rounded-full text-sm cursor-pointer ${
+            className={`px-5 py-2 rounded-full text-sm cursor-pointer border ${
               selectedCategory === cat.id
-                ? "bg-emerald-600 text-white"
-                : "bg-white"
+                ? "bg-emerald-600 text-white font-semibold"
+                : "bg-white hover:border-emerald-600 "
             }`}
           >
             {cat.name}

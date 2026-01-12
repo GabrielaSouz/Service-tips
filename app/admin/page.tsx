@@ -23,8 +23,8 @@ export default function AdminPage() {
   }, [])
 
   return (
-    <div className="max-w-7xl mx-auto px-4 space-y-10">
-      <h1 className="text-2xl font-bold">Painel Administrativo</h1>
+    <div className="max-w-7xl mx-auto px-4 space-y-10 mt-10">
+      <h1 className="text-2xl font-bold text-center">Painel Administrativo</h1>
 
       <div className=" gap-10">
         <CategoriesManager onChange={loadCategories} />

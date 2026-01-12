@@ -1,6 +1,7 @@
 "use client"
 
 import { MapPinIcon, PhoneIcon, Pencil, Trash2 } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 export type Service = {
   id: string
@@ -61,21 +62,25 @@ export default function ServiceCard({
         {/* Ações admin */}
         {variant === "admin" && (
           <div className="flex gap-2 pt-2">
-            <button
+            <Button
+              variant="outline"
+              size="sm"
               onClick={() => onEdit?.(service)}
-              className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm rounded-md bg-blue-50 text-blue-600 hover:bg-blue-100"
+              className="flex-1"
             >
-              <Pencil size={16} />
+              <Pencil size={16} className="mr-2" />
               Editar
-            </button>
+            </Button>
 
-            <button
+            <Button
+              variant="destructive"
+              size="sm"
               onClick={() => onDelete?.(service.id)}
-              className="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-sm rounded-md bg-red-50 text-red-600 hover:bg-red-100"
+              className="flex-1"
             >
-              <Trash2 size={16} />
+              <Trash2 size={16} className="mr-2" />
               Excluir
-            </button>
+            </Button>
           </div>
         )}
       </div>

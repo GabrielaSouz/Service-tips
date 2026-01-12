@@ -68,7 +68,7 @@ export default function CategoriesManager({ onChange }: Props) {
     }
   }
 
-  // ❌ Deletar categoria
+  // Deletar categoria
   async function handleDelete(id: string) {
     if (!confirm("Tem certeza que deseja excluir esta categoria?")) return
 
@@ -87,7 +87,7 @@ export default function CategoriesManager({ onChange }: Props) {
     }
   }
 
-  // ✏️ Editar categoria
+  // Editar categoria
   function handleEdit(category: Category) {
     setEditingId(category.id)
     setForm({ name: category.name })

@@ -47,7 +47,6 @@ export default function ServiceCard({
         </p>
       </div>
 
-      {/* Footer */}
       <div className="mt-auto pt-4 border-t border-slate-100 space-y-3">
         <div className="flex items-center text-sm text-slate-500">
           <MapPinIcon className="h-4 w-4 mr-2 text-emerald-500" />

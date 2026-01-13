@@ -51,8 +51,8 @@ export default function AdminPage() {
 
   const tabs = [
     { id: "overview", label: "Visão Geral", icon: BarChart3 },
-    { id: "services", label: "Serviços", icon: Users },
-    { id: "categories", label: "Categorias", icon: Database }
+    { id: "categories", label: "Categorias", icon: Database },
+    { id: "services", label: "Serviços", icon: Users }
   ] as const
 
   return (

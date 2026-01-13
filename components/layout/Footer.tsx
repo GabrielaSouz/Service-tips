@@ -1,4 +1,5 @@
 import { ShieldCheckIcon } from "lucide-react";
+import Link from "next/link";
 
 export default function Footer() {
     const year = new Date().getFullYear();
@@ -12,6 +13,7 @@ export default function Footer() {
             </div>
 
             <div className="flex flex-col items-start md:items-end">
+                <Link href="/login">Área administrativa </Link>
                 <div className="flex items-center space-x-2 text-emerald-500 mb-2">
                     <ShieldCheckIcon className="h-5 w-5"/>
                     <span className="text-sm font-medium">Informação Verificada pela Comunidade</span>

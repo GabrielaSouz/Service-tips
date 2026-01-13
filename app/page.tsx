@@ -63,7 +63,7 @@ export default function Home() {
           selectedCategory={selectedCategory}
           onCategoryChange={setSelectedCategory}
         />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-stretch gap-6 mb-12">
+        <div id="services-section" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 items-stretch gap-6 mb-12">
           {filteredServices.map(service => (
             <ServiceCard key={service.id} service={service} />
           ))}

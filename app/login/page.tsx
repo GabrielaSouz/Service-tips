@@ -69,14 +69,16 @@ export default function Login() {
         />
            <div className="p-8">
              <h1 className="text-3xl text-slate-6000 mb-4 text-center font-serif">
-             Welcome <span className="text-emerald-600 italic">back!</span>
+             Bem-vinda de <span className="text-emerald-600 italic">volta!</span>
            </h1>
 
         {/* Links */}
            <div className="flex justify-around items-center text-slate-600 text-sm mb-6">
             <Link href="/login" className="font-semibold text-emerald-600">Login</Link>
             <span className="text-emerald-600 font-bold text-base  hover:text-emerald-600 transition-colors">|</span>
-            <Link href="/register" className=" hover:text-emerald-600 transition-colors">Register</Link>
+            <Link href="/register" className=" hover:text-emerald-600 transition-colors">Cadastro</Link>
+             <span className="text-emerald-600 font-bold text-base  hover:text-emerald-600 transition-colors">|</span>
+            <Link href="/" className=" hover:text-emerald-600 transition-colors">Página Inicial</Link>
            </div>
 
            {/* Form */}
@@ -88,7 +90,7 @@ export default function Login() {
            </div>
 
            <div className="space-y-1">
-            <Label htmlFor="password" className="text-slate-800">Password</Label>
+            <Label htmlFor="password" className="text-slate-800">Senha</Label>
             <Input id="password" value={password} onChange={(e) => setPassword(e.target.value)} type="password" placeholder="Enter your password" className="text-sm"/>
            </div>
 

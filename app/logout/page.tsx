@@ -18,7 +18,7 @@ export default function Logout() {
     })
 
     toast.success("Logout realizado com sucesso!")
-    router.push("/login")
+    router.push("/")
   }, [router])
 
   return (

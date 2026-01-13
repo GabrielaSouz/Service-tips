@@ -71,7 +71,9 @@ export default function Register() {
                <div className="flex justify-around items-center text-slate-600 text-sm mb-6">
                   <Link href="/login" className="hover:text-emerald-600 transition-colors">Login</Link>
                   <span className="text-emerald-600 font-bold text-base">|</span>
-                  <Link href="/register" className="font-semibold text-emerald-600">Register</Link>
+                  <Link href="/register" className="font-semibold text-emerald-600">Cadastro</Link>
+                   <span className="text-emerald-600 font-bold text-base  hover:text-emerald-600 transition-colors">|</span>
+            <Link href="/" className=" hover:text-emerald-600 transition-colors">Página Inicial</Link>
                </div>
 
                {/* Form */}

@@ -41,10 +41,10 @@ O projeto tem como objetivo fortalecer a comunidade, facilitando o acesso a serv
 
 ```bash
 # Clone o repositório
-git clone https://github.com/seu-usuario/nome-do-repositorio.git
+git clone https://github.com/GabrielaSouz/Service-tips.git
 
 # Entre na pasta
-cd nome-do-repositorio
+cd Service-tips
 
 # Instale as dependências
 npm install

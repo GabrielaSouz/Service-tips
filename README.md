@@ -31,7 +31,7 @@ O projeto tem como objetivo fortalecer a comunidade, facilitando o acesso a serv
 
 ## 🖥️ Preview do projeto
 
-![Preview do projeto](./public/preview.png)
+![Preview do projeto](./public/preview.jpg)
 
 > 💡 A imagem acima mostra a interface principal da aplicação.
 

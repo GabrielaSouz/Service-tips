@@ -15,9 +15,27 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Brasileiras em KL",
-  description: "Plataforma criada para indicar, encontrar e compartilhar serviços em Kuala Lumpur.",
-};
-
+  description: "Indicações de serviços para brasileiras que moram em Kuala Lumpur",
+  icons: {
+    icon: "/favicon.ico",
+  },
+  openGraph: {
+    title: "Brasileiras em KL",
+    description: "Encontre indicações de serviços feitos por brasileiras em Kuala Lumpur",
+    url: "https://service-tips.vercel.app/",
+    siteName: "Brasileiras em KL",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Preview do Brasileiras em KL",
+      },
+    ],
+    locale: "pt_BR",
+    type: "website",
+  },
+}
 export default function RootLayout({
   children,
 }: Readonly<{

@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🇧🇷 Serviços para Brasileiras em Kuala Lumpur
 
-## Getting Started
+Plataforma web criada para que brasileiras que moram em **Kuala Lumpur** possam **indicar, encontrar e compartilhar serviços** de forma simples e organizada.
 
-First, run the development server:
+O projeto tem como objetivo fortalecer a comunidade, facilitando o acesso a serviços confiáveis como beleza, alimentação, aulas particulares, manutenção, entre outros.
+
+---
+
+## 🚀 Tecnologias utilizadas
+
+- **React**
+- **Next.js**
+- **Tailwind CSS**
+- **Supabase** (autenticação e banco de dados)
+- **Resend** (envio de e-mails)
+- **Lucide Icons**
+
+---
+
+## ✨ Funcionalidades
+
+- Cadastro e login de usuários
+- Cadastro de categoria
+- Cadastro de serviço
+- Indicação de serviços pela comunidade
+- Listagem de serviços por categoria
+- Área administrativa para gerenciamento
+- Interface responsiva e moderna
+
+---
+
+## 🖥️ Preview do projeto
+
+![Preview do projeto](./public/preview.png)
+
+> 💡 A imagem acima mostra a interface principal da aplicação.
+
+---
+
+## 📦 Como rodar o projeto localmente
 
 ```bash
+# Clone o repositório
+git clone https://github.com/seu-usuario/nome-do-repositorio.git
+
+# Entre na pasta
+cd nome-do-repositorio
+
+# Instale as dependências
+npm install
+
+# Rode o projeto
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
